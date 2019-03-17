@@ -1,9 +1,11 @@
 with Client {
-	var z = 0;
-	while (ds_list_size(messages) > 0) {
+	var message_count = ds_list_size(messages);
+	
+	for (var z = 0; z < message_count; z++) {
 		var message = messages[| z];
+		var state_count = ds_list_size(message);
 
-		for (var i = 0; i < ds_list_size(message); i++) {
+		for (var i = 0; i < state_count; i++) {
 			var state = message[| i];
 			var entity = entities[? state[? "id"]];
 
@@ -19,7 +21,7 @@ with Client {
 				while (j < ds_list_size(pending_inputs)) {
 					var input = pending_inputs[| j];
 					
-					if (real(input[? "i"]) <= real(state[? "lpi"])) {
+					if (real(input[? CmdKey.input_number]) <= real(state[? "lpi"])) {
 						ds_map_destroy(input);
 						ds_list_delete(pending_inputs, j);
 					} else {
@@ -35,6 +37,6 @@ with Client {
 		}
 
 		ds_list_destroy(message);
-		ds_list_delete(messages, z++);
+		ds_list_delete(messages, z);
 	}
 }
