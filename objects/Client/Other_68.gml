@@ -12,7 +12,8 @@ switch res[? "rpc"] {
 		break;
 	case "connected":
 		client_id = string(res[? "id"]);
-		ds_map_add(entities, client_id, instance_create_layer(10, 10, "Instances", Entity));
+		player = instance_create_layer(10, 10, "Instances", Entity);
+		ds_map_add(entities, client_id, player);
 		show_debug_message("connected with client id: " + client_id);
 		break;
 	case "disconnect":

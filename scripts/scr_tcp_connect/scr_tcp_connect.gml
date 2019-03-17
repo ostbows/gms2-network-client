@@ -9,7 +9,8 @@ with Client {
 		ds_list_clear(messages);
 		ds_list_clear(pending_inputs);
 		
-		client_id = "-1"
+		client_id = "-1";
+		player = -1;
 		input_number = 0;
 		input_reset_timer = 0;
 	} else {

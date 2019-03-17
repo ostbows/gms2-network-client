@@ -5,12 +5,11 @@ with Client {
 	key_right = keyboard_check(vk_right);
 
 	if (key_right - key_left != 0) {
+		scr_apply_input(
+			scr_send_cmd_move(key_left ? -press_time : press_time)
+		);
+		
 		input_reset_timer = 0;
-		
-		if (key_left) press_time = -press_time;
-		press_time = string(press_time);
-		
-		scr_apply_input(scr_send_move(press_time));
 	} else {
 		input_reset_timer -= press_time;
 		
@@ -21,7 +20,7 @@ with Client {
 				input_number = 0;
 			}
 			
-			scr_send_move("0")
+			scr_send_cmd_move(0)
 		}
 	}
 }
