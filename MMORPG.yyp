@@ -31,6 +31,22 @@
     },
     "resources": [
         {
+            "Key": "10d081e6-c535-4d63-83b4-76d8dde2462d",
+            "Value": {
+                "id": "9f07b1e1-b234-4736-9bc1-407f1317fecd",
+                "resourcePath": "objects\\RpcType\\RpcType.yy",
+                "resourceType": "GMObject"
+            }
+        },
+        {
+            "Key": "1511232b-7132-4586-b5b9-bc1d9e9217b4",
+            "Value": {
+                "id": "68f6ac64-6848-4a5d-9ee5-bb2bc8979173",
+                "resourcePath": "objects\\RpcKey\\RpcKey.yy",
+                "resourceType": "GMObject"
+            }
+        },
+        {
             "Key": "226b87a0-2a49-4019-b88f-f67224bce71a",
             "Value": {
                 "id": "57c1507a-c93c-4cc8-870e-d71f1352c205",

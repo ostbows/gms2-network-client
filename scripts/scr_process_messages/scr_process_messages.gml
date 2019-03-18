@@ -1,3 +1,5 @@
+var state_key = RpcKey.world_state[? "state"];
+
 with Client {
 	var message_count = ds_list_size(messages);
 	
@@ -7,21 +9,23 @@ with Client {
 
 		for (var i = 0; i < state_count; i++) {
 			var state = message[| i];
-			var entity = entities[? state[? "id"]];
+			var entity_id = state[? state_key[? "entity_id"]];
+			var entity = entities[? entity_id];
 
 			if (is_undefined(entity)) {
 				entity = instance_create_layer(10, 10, "Instances", Entity);
-				ds_map_add(entities, state[? "id"], entity);
+				ds_map_add(entities, entity_id, entity);
 			}
 
-			if (state[? "id"] == client_id) {
-				entity.x = state[? "x"];
-
-				var j = 0;
-				while (j < ds_list_size(pending_inputs)) {
+			if (entity_id == client_id) {
+				entity.x = state[? state_key[? "pos_x"]];
+				
+				var last_processed_input = real(state[? state_key[? "last_processed_input"]]);
+				
+				var j = 0; while (j < ds_list_size(pending_inputs)) {
 					var input = pending_inputs[| j];
 					
-					if (real(input[? CmdKey.input_number]) <= real(state[? "lpi"])) {
+					if (real(input[? CmdKey.input_number]) <= last_processed_input) {
 						ds_map_destroy(input);
 						ds_list_delete(pending_inputs, j);
 					} else {
@@ -30,7 +34,7 @@ with Client {
 					}
 				}
 			} else {
-				entity.x = state[? "x"];
+				entity.x = state[? state_key[? "pos_x"]];
 			}
 			
 			ds_map_destroy(state);
