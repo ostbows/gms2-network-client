@@ -10,7 +10,8 @@
         "ca87f9a8-e314-4bf1-b24f-b282c71e4946",
         "a97f592b-dea5-407f-9d38-361e8526d226",
         "de0fe47c-77b1-4217-957c-226aac446e0a",
-        "deb4a71b-6b83-41b2-92fd-aa15189373ba"
+        "deb4a71b-6b83-41b2-92fd-aa15189373ba",
+        "8657d6cf-1fad-4410-9324-47966dbf47f9"
     ],
     "filterType": "GMScript",
     "folderName": "Client",

@@ -58,7 +58,7 @@
             "Key": "2929736c-be22-43ad-8593-a76ea2139fd6",
             "Value": {
                 "id": "d8bd46ea-0dc6-4fb9-aa55-677101db26d2",
-                "resourcePath": "scripts\\scr_send_cmd_move\\scr_send_cmd_move.yy",
+                "resourcePath": "scripts\\scr_cmd_move_send\\scr_cmd_move_send.yy",
                 "resourceType": "GMScript"
             }
         },
@@ -151,6 +151,14 @@
             }
         },
         {
+            "Key": "8657d6cf-1fad-4410-9324-47966dbf47f9",
+            "Value": {
+                "id": "a4804a55-2ac6-499c-bd64-6670b8e8811c",
+                "resourcePath": "scripts\\scr_parse_rpc\\scr_parse_rpc.yy",
+                "resourceType": "GMScript"
+            }
+        },
+        {
             "Key": "87d069c5-83b0-4218-a730-1469eb3740c4",
             "Value": {
                 "id": "a3c78bba-f5ea-4c6c-9af4-8aac368c934c",
@@ -194,7 +202,7 @@
             "Key": "a97f592b-dea5-407f-9d38-361e8526d226",
             "Value": {
                 "id": "8f198956-0820-4a76-9631-e1942ac5561b",
-                "resourcePath": "scripts\\scr_parse_world_state\\scr_parse_world_state.yy",
+                "resourcePath": "scripts\\scr_copy_world_state\\scr_copy_world_state.yy",
                 "resourceType": "GMScript"
             }
         },
@@ -310,7 +318,8 @@
         "ca87f9a8-e314-4bf1-b24f-b282c71e4946",
         "a97f592b-dea5-407f-9d38-361e8526d226",
         "de0fe47c-77b1-4217-957c-226aac446e0a",
-        "deb4a71b-6b83-41b2-92fd-aa15189373ba"
+        "deb4a71b-6b83-41b2-92fd-aa15189373ba",
+        "8657d6cf-1fad-4410-9324-47966dbf47f9"
     ],
     "tutorial": ""
 }

@@ -1,14 +1,11 @@
-var state_key = RpcKey.world_state[? "state"];
-
 with Client {
-	var message_count = ds_list_size(messages);
+	var state_key = RpcKey.world_state[? "state"];
 	
-	for (var z = 0; z < message_count; z++) {
-		var message = messages[| z];
-		var state_count = ds_list_size(message);
+	while (ds_list_size(messages) > 0) {
+		var message = messages[| 0];
 
-		for (var i = 0; i < state_count; i++) {
-			var state = message[| i];
+		var i = 0; repeat (ds_list_size(message)) {
+			var state = message[| i++];
 			var entity_id = state[? state_key[? "entity_id"]];
 			var entity = entities[? entity_id];
 
@@ -22,7 +19,8 @@ with Client {
 				
 				var last_processed_input = real(state[? state_key[? "last_processed_input"]]);
 				
-				var j = 0; while (j < ds_list_size(pending_inputs)) {
+				var j = 0;
+				while (j < ds_list_size(pending_inputs)) {
 					var input = pending_inputs[| j];
 					
 					if (real(input[? CmdKey.input_number]) <= last_processed_input) {
@@ -34,13 +32,17 @@ with Client {
 					}
 				}
 			} else {
-				entity.x = state[? state_key[? "pos_x"]];
+				var position_buffer = array_create(2);
+				position_buffer[0] = current_time;
+				position_buffer[1] = state[? state_key[? "pos_x"]];
+				
+				ds_list_add(entity.position_buffer, position_buffer);
 			}
 			
 			ds_map_destroy(state);
 		}
 
 		ds_list_destroy(message);
-		ds_list_delete(messages, z);
+		ds_list_delete(messages, 0);
 	}
 }
