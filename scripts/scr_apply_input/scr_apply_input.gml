@@ -1,10 +1,16 @@
 ///@description scr_apply_input
 ///@arg {ds_map} input
+///@arg {Entity} entity
 
-with Client.player {
-	switch argument0[? CmdKey.type] {
-		case CmdType.move:
-			x += (real(argument0[? CmdKey.move[? "press_time"]])/1000) * spd;
+var input = argument0;
+var entity = argument1;
+
+with entity
+{
+	switch input[? "action"]
+	{
+		case cmd.move:
+			x += input[? "press_time"] * spd;
 			break;
 	}
 }

@@ -1,5 +1,128 @@
-if (keyboard_check_pressed(vk_space)) scr_tcp_connect();
-if (client_id == "-1") exit;
+#region connect/disconnect from server
+if keyboard_check_pressed(vk_space)
+{
+	if client_id != "-1"
+	{
+		client_id = "-1";
+		
+		network_destroy(tcp_client);
+		network_destroy(udp_client);
+	
+		with Entity instance_destroy(id);
+		ds_map_clear(entities);
+		
+		while !ds_queue_empty(messages) {
+			var message = ds_queue_dequeue(messages);
+			var n = ds_list_size(message);
+			
+			for (var i = 0; i < n; i++) {
+				ds_map_destroy(message[| i]);
+			}
+			
+			ds_list_destroy(message);
+		}
+		
+		while !ds_queue_empty(pending_inputs) {
+			ds_map_destroy(ds_queue_dequeue(pending_inputs));
+		}
+		
+		input_number = 0;
+		input_reset_timer = 0;
+	}
+	else
+	{
+		tcp_client = network_create_socket(network_socket_tcp);
+		udp_client = network_create_socket(network_socket_udp);
+	
+		network_connect_raw(tcp_client, server_ip, server_tcp_port);
+	}
+}
+#endregion
+#region process messages
+while !ds_queue_empty(messages)
+{
+	var message = ds_queue_dequeue(messages);
+	var n = ds_list_size(message);
+		
+	for (var i = 0; i < n; i++)
+	{
+		var state = message[| i];
+		var entity_id = state[? "client_id"];
+		var entity = entities[? entity_id];
+			
+		if is_undefined(entity)
+		{
+			entity = instance_create_layer(10, 10, "Instances", Entity);
+			ds_map_add(entities, entity_id, entity);
+		}
+			
+		if entity_id == client_id
+		{
+			entity.x = state[? "pos_x"];
+				
+			var j = 0;
+			var last_processed_input = state[? "last_processed_input"];
+				
+			while j < ds_queue_size(pending_inputs)
+			{
+				var input = ds_queue_head(pending_inputs);
+					
+				if input[? "input_number"] <= last_processed_input
+				{
+					ds_map_destroy(input);
+					ds_queue_dequeue(pending_inputs);
+				}
+				else
+				{
+					scr_apply_input(input, entity);
+					j++;
+				}
+			}
+		}
+		else
+		{
+			var position_buffer = ds_list_create();
+			ds_list_add(position_buffer, current_time);
+			ds_list_add(position_buffer, state[? "pos_x"]);
+			ds_queue_enqueue(entity.position_buffer, position_buffer);
+		}
+			
+		ds_map_destroy(state);
+	}
+		
+	ds_list_destroy(message);
+}
+#endregion
+#region process input
+if client_id != "-1"
+{
+	var press_time = delta_time/(1000*1000);
+	
+	key_left = keyboard_check(vk_left);
+	key_right = keyboard_check(vk_right);
 
-scr_process_messages();
-scr_process_input();
+	if key_right - key_left != 0
+	{
+		var input = scr_cmd_move(key_left ? -press_time : press_time);
+		
+		scr_apply_input(input, entities[? client_id]);
+		
+		input_reset_timer = 0;
+	}
+	else
+	{
+		input_reset_timer -= press_time;
+		
+		if input_reset_timer <= 0
+		{
+			if ds_queue_empty(pending_inputs) {
+				input_number = 0;
+			}
+			
+			scr_cmd_move(0);
+			
+			input_reset_timer = 3;
+		}
+	}
+}
+#endregion
