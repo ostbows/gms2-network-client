@@ -37,7 +37,10 @@ switch action
 		client_id = string(buffer_read(r_buffer, buffer_u8));
 		show_debug_message("connected with client id: " + client_id);
 		
-		ds_map_add(entities, client_id, instance_create_layer(10, 10, "Instances", Entity));
+		var entity = instance_create_layer(10, 10, "Instances", Entity);
+		entity.entity_id = client_id;
+		
+		ds_map_add(entities, client_id, entity);
 		
 		break;
 	#endregion

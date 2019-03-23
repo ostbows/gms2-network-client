@@ -1,4 +1,4 @@
-#region connect/disconnect from server
+#region check connection
 if keyboard_check_pressed(vk_space)
 {
 	if client_id != "-1"
@@ -10,21 +10,8 @@ if keyboard_check_pressed(vk_space)
 	
 		with Entity instance_destroy(id);
 		ds_map_clear(entities);
-		
-		while !ds_queue_empty(messages) {
-			var message = ds_queue_dequeue(messages);
-			var n = ds_list_size(message);
-			
-			for (var i = 0; i < n; i++) {
-				ds_map_destroy(message[| i]);
-			}
-			
-			ds_list_destroy(message);
-		}
-		
-		while !ds_queue_empty(pending_inputs) {
-			ds_map_destroy(ds_queue_dequeue(pending_inputs));
-		}
+		scr_empty_messages(messages, false);
+		scr_empty_pending_inputs(pending_inputs, false);
 		
 		input_number = 0;
 		input_reset_timer = 0;
@@ -53,6 +40,8 @@ while !ds_queue_empty(messages)
 		if is_undefined(entity)
 		{
 			entity = instance_create_layer(10, 10, "Instances", Entity);
+			entity.entity_id = entity_id;
+			
 			ds_map_add(entities, entity_id, entity);
 		}
 			
@@ -84,7 +73,7 @@ while !ds_queue_empty(messages)
 			var position_buffer = ds_list_create();
 			ds_list_add(position_buffer, current_time);
 			ds_list_add(position_buffer, state[? "pos_x"]);
-			ds_queue_enqueue(entity.position_buffer, position_buffer);
+			ds_list_add(entity.position_buffer, position_buffer);
 		}
 			
 		ds_map_destroy(state);
@@ -122,6 +111,39 @@ if client_id != "-1"
 			scr_cmd_move(0);
 			
 			input_reset_timer = 3;
+		}
+	}
+}
+#endregion
+#region interpolate entities
+var render_timestamp = current_time - (1000 / server_update_rate);
+var player_id = client_id;
+
+with Entity {
+	if self.entity_id == player_id {
+		continue;
+	}
+	
+	var pb = self.position_buffer;
+	
+	while ds_list_size(pb) >= 2 {
+		var p1 = pb[|1];
+		var t1 = p1[|0];
+		
+		if t1 <= render_timestamp {
+			ds_list_delete(pb, 0);
+		} else {
+			var p0 = pb[|0];
+			var t0 = p0[|0];
+		
+			if t0 <= render_timestamp && render_timestamp <= t1 {
+				var x0 = p0[|1];
+				var x1 = p1[|1];
+			
+				self.x = x0 + (x1 - x0) * (render_timestamp - t0) / (t1 - t0);
+			}
+			
+			break;
 		}
 	}
 }
