@@ -2,7 +2,7 @@ client_id = "-1";
 server_ip = "127.0.0.1";
 server_tcp_port = "2222";
 server_udp_port = "41234";
-server_update_rate = 10;
+server_update_rate = 0;
 tcp_client = -1;
 udp_client = -1;
 
