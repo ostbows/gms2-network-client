@@ -10,9 +10,12 @@ buffer = buffer_create(256, buffer_grow, 1);
 entities = ds_map_create();
 messages = ds_queue_create();
 pending_inputs = ds_queue_create();
+disconnected = ds_queue_create();
 
+check_input = true;
 key_left = false;
 key_right = false;
+press_time = 0;
 input_number = 0;
 input_reset_timer = 0;
 

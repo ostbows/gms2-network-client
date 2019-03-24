@@ -1,8 +1,10 @@
-var messages = argument0;
-var destroy = argument1;
+///@description scr_empty_messages
+///@arg {ds_queue} messages : argument0
+///@arg {boolean} destroy : argument1
 
-while !ds_queue_empty(messages) {
-	var message = ds_queue_dequeue(messages);
+while !ds_queue_empty(argument0)
+{
+	var message = ds_queue_dequeue(argument0);
 	var n = ds_list_size(message);
 			
 	for (var i = 0; i < n; i++) {
@@ -12,6 +14,6 @@ while !ds_queue_empty(messages) {
 	ds_list_destroy(message);
 }
 
-if destroy {
-	ds_queue_destroy(messages);
+if argument1 {
+	ds_queue_destroy(argument0);
 }

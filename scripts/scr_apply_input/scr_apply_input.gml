@@ -1,16 +1,10 @@
 ///@description scr_apply_input
-///@arg {ds_map} input
-///@arg {Entity} entity
+///@arg {ds_map} input : argument0
+///@arg {Entity} entity : argument1
 
-var input = argument0;
-var entity = argument1;
-
-with entity
+switch argument0[? "action"]
 {
-	switch input[? "action"]
-	{
-		case cmd.move:
-			x += input[? "press_time"] * spd;
-			break;
-	}
+	case cmd.move:
+		argument1.x += argument0[? "press_time"] * argument1.spd;
+		break;
 }

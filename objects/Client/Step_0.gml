@@ -10,6 +10,7 @@ if keyboard_check_pressed(vk_space)
 	
 		with Entity instance_destroy(id);
 		ds_map_clear(entities);
+		ds_queue_clear(disconnected);
 		scr_empty_messages(messages, false);
 		scr_empty_pending_inputs(pending_inputs, false);
 		
@@ -83,16 +84,16 @@ while !ds_queue_empty(messages)
 }
 #endregion
 #region process input
-if client_id != "-1"
-{
-	var press_time = delta_time/(1000*1000);
-	
+press_time += delta_time/1000000;
+check_input = !check_input;
+
+if check_input && client_id != "-1" {
 	key_left = keyboard_check(vk_left);
 	key_right = keyboard_check(vk_right);
 
 	if key_right - key_left != 0
 	{
-		var input = scr_cmd_move(key_left ? -press_time : press_time);
+		var input = scr_cmd_move(key_left ? -press_time : press_time, self)
 		
 		scr_apply_input(input, entities[? client_id]);
 		
@@ -108,19 +109,20 @@ if client_id != "-1"
 				input_number = 0;
 			}
 			
-			scr_cmd_move(0);
+			scr_cmd_move(0, self);
 			
 			input_reset_timer = 3;
 		}
 	}
+	
+	press_time = 0;
 }
 #endregion
 #region interpolate entities
-var render_timestamp = current_time - (1000 / server_update_rate);
-var player_id = client_id;
+var render_timestamp = current_time - (1000/server_update_rate);
 
 with Entity {
-	if self.entity_id == player_id {
+	if self.entity_id == other.client_id {
 		continue;
 	}
 	

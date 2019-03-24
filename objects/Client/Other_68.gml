@@ -25,10 +25,10 @@ switch action
 	#region disonnected
 	case rpc.disconnected:
 		var entity_id = string(buffer_read(r_buffer, buffer_u8));
-		show_debug_message("client #" + entity_id + " has disconnected");
+		show_debug_message("client #" + entity_id + " has disconnected")
 		
-		instance_destroy(entities[? entity_id]);
-		ds_map_delete(entities, entity_id);
+		ds_queue_enqueue(disconnected, entity_id);
+		alarm[0] = room_speed * 3;
 		
 		break;
 	#endregion
@@ -36,11 +36,14 @@ switch action
 	case rpc.connected:
 		client_id = string(buffer_read(r_buffer, buffer_u8));
 		server_update_rate = buffer_read(r_buffer, buffer_u8);
+		entity_spd = buffer_read(r_buffer, buffer_u8);
 		show_debug_message("connected with client id: " + client_id);
 		show_debug_message("server update rate: " + string(server_update_rate));
+		show_debug_message("entity speed: " + string(entity_spd));
 		
 		var entity = instance_create_layer(10, 10, "Instances", Entity);
 		entity.entity_id = client_id;
+		entity.spd = entity_spd;
 		
 		ds_map_add(entities, client_id, entity);
 		

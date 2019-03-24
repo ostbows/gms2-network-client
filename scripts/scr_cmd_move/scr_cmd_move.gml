@@ -1,7 +1,8 @@
 ///@description scr_cmd_move
-///@arg {real} press_time
+///@arg {real} press_time : argument0
+///@arg {Client} client : argument1
 
-with Client
+with argument1
 {
 	var input = ds_map_create();
 	ds_map_add(input, "action", cmd.move);

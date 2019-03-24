@@ -1,10 +1,11 @@
-var pending_inputs = argument0;
-var destroy = argument1;
+///@description scr_empty_pending_inputs
+///@arg {ds_queue} pending_inputs : argument0
+///@arg {boolean} destroy : argument1
 
-while !ds_queue_empty(pending_inputs) {
-	ds_map_destroy(ds_queue_dequeue(pending_inputs));
+while !ds_queue_empty(argument0) {
+	ds_map_destroy(ds_queue_dequeue(argument0));
 }
 
-if destroy {
-	ds_queue_destroy(pending_inputs);
+if argument1 {
+	ds_queue_destroy(argument0);
 }
