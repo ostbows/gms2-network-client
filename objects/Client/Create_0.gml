@@ -17,7 +17,6 @@ key_left = false;
 key_right = false;
 press_time = 0;
 input_number = 0;
-input_reset_timer = 0;
 
 enum cmd {
 	move

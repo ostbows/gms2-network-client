@@ -4,6 +4,7 @@ if keyboard_check_pressed(vk_space)
 	if client_id != "-1"
 	{
 		client_id = "-1";
+		input_number = 0;
 		
 		network_destroy(tcp_client);
 		network_destroy(udp_client);
@@ -13,9 +14,6 @@ if keyboard_check_pressed(vk_space)
 		ds_queue_clear(disconnected);
 		scr_empty_messages(messages, false);
 		scr_empty_pending_inputs(pending_inputs, false);
-		
-		input_number = 0;
-		input_reset_timer = 0;
 	}
 	else
 	{
@@ -84,42 +82,23 @@ while !ds_queue_empty(messages)
 }
 #endregion
 #region process input
-press_time += delta_time/1000000;
+press_time += delta_time;
 check_input = !check_input;
 
 if check_input && client_id != "-1" {
 	key_left = keyboard_check(vk_left);
 	key_right = keyboard_check(vk_right);
 
-	if key_right - key_left != 0
-	{
-		var input = scr_cmd_move(key_left ? -press_time : press_time, self)
-		
+	if key_right - key_left != 0 {
+		var input = scr_cmd_move(key_left ? -press_time : press_time, self);
 		scr_apply_input(input, entities[? client_id]);
-		
-		input_reset_timer = 0;
-	}
-	else
-	{
-		input_reset_timer -= press_time;
-		
-		if input_reset_timer <= 0
-		{
-			if ds_queue_empty(pending_inputs) {
-				input_number = 0;
-			}
-			
-			scr_cmd_move(0, self);
-			
-			input_reset_timer = 3;
-		}
 	}
 	
 	press_time = 0;
 }
 #endregion
 #region interpolate entities
-var render_timestamp = current_time - (1000/server_update_rate);
+var render_timestamp = current_time - 1000 / server_update_rate;
 
 with Entity {
 	if self.entity_id == other.client_id {
@@ -128,7 +107,8 @@ with Entity {
 	
 	var pb = self.position_buffer;
 	
-	while ds_list_size(pb) >= 2 {
+	while ds_list_size(pb) >= 2
+	{
 		var p1 = pb[|1];
 		var t1 = p1[|0];
 		
@@ -138,7 +118,8 @@ with Entity {
 			var p0 = pb[|0];
 			var t0 = p0[|0];
 		
-			if t0 <= render_timestamp && render_timestamp <= t1 {
+			if t0 <= render_timestamp && render_timestamp <= t1
+			{
 				var x0 = p0[|1];
 				var x1 = p1[|1];
 			

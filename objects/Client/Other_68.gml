@@ -8,11 +8,13 @@ switch action
 		var message = ds_list_create();
 		var n = (buffer_get_size(r_buffer) - 1) / 8;
 		
-		for (var i = 0; i < n; i++) {
+		for (var i = 0; i < n; i++)
+		{
 			var state = ds_map_create();
-			ds_map_add(state, "client_id", string(buffer_read(r_buffer, buffer_u8)));
-			ds_map_add(state, "pos_x", buffer_read(r_buffer, buffer_f32));
-			ds_map_add(state, "last_processed_input", buffer_read(r_buffer, buffer_u16));
+			state[? "client_id"] = string(buffer_read(r_buffer, buffer_u8));
+			state[? "pos_x"] = buffer_read(r_buffer, buffer_f32);
+			state[? "last_processed_input"] = buffer_read(r_buffer, buffer_u16);
+			
 			ds_list_add(message, state);
 			
 			buffer_read(r_buffer, buffer_s8); // contains -1 to mark the end
@@ -46,6 +48,7 @@ switch action
 		entity.spd = entity_spd;
 		
 		ds_map_add(entities, client_id, entity);
+		scr_cmd_move(0, self);
 		
 		break;
 	#endregion

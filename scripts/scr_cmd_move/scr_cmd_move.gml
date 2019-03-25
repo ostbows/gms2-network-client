@@ -5,10 +5,10 @@
 with argument1
 {
 	var input = ds_map_create();
-	ds_map_add(input, "action", cmd.move);
-	ds_map_add(input, "client_id", client_id);
-	ds_map_add(input, "input_number", input_number++);
-	ds_map_add(input, "press_time", argument0);
+	input[? "action"] = cmd.move;
+	input[? "client_id"] = client_id;
+	input[? "input_number"] = input_number++;
+	input[? "press_time"] = argument0 / 1000000;
 	
 	buffer_seek(buffer, buffer_seek_start, 0);
 	buffer_write(buffer, buffer_u8, input[? "action"]);
